@@ -79,9 +79,9 @@ if is_clicked01:
     file_pathN = None
     for root, dirs, files in os.walk(temp_dir):
         for file in files:
-            if file.startswith('produkt_rr_stunde') & file.endswith('.txt'):
+            if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
                 file_pathK = os.path.join(root, file)
-            if file.startswith('produkt_rr_stunde') & file.endswith('.txt'):
+            if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(sndStation_no):
                 file_pathN = os.path.join(root, file)
                 break
 
