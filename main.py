@@ -269,7 +269,7 @@ if is_clicked01:
         zeroline=True
     )
     
-    st.plotly_chart(figXCX,use_container_width=True)
+    st.plotly_chart(figXCX,use_container_width=True,theme=None)
 
 
     st.markdown("<i>Abbildung 1: Regenmengen sind angegeben als L / qm innerhalb einer Stunde</i>",unsafe_allow_html=True)
@@ -296,8 +296,20 @@ if is_clicked01:
         col1, col2 = st.columns(2)
         col1.markdown('#### Tägliche Regenmengen in L/qm')
         col1.dataframe(daily_sums,height=800)
+
         col2.markdown('#### Wöchentliche Regenmengen in L/qm')
         col2.dataframe(weekly_sums)
+
+    mylist = (daily_sums.index.tolist())
+    peter = '<br>'.join([d.strftime('%Y-%m-%d') for d in mylist])
+
+    concatenated_fst = '<br>'.join(daily_sums[fstStation_city].round(2).astype(str))
+    concatenated_snd = '<br>'.join(daily_sums[sndStation_city].round(2).astype(str))
+    tablestyle = "<style>table {font-family: arial, sans-serif;border-collapse: collapse;width: 65%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}tr:nth-child(even) {background-color: #dddddd;}</style>"
+    table ="""Columns at 21:00 indicate the precipitation between 20:00 and 21:00 MEZ <br><br>{}<table>
+            <tr><td>{}</td><td>{}</td><td>{}</td></tr>
+            <tr><td>{}</td><td>{}</td><td>{}</td></tr></table>""".format(tablestyle, 'Datum', fstStation_city, sndStation_city, peter, concatenated_fst, concatenated_snd)
+    st.markdown(table,unsafe_allow_html=True)
 
 
     # works if local folder is defined, not if tmp folder is specified
