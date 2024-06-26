@@ -81,13 +81,17 @@ if is_clicked01:
         for file in files:
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
                 file_pathK = os.path.join(root, file)
+                st.write(fstStation_no)
+                st.write(file_pathK)
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(sndStation_no):
                 file_pathN = os.path.join(root, file)
+                st.write(sndStation_no)
+                st.write(file_pathN)
                 break
 
     # Check if the file was found
     if file_pathK is None or file_pathN is None:
-        st.markdown("No file found in the specified subfolder." + file_pathK,unsafe_allow_html=True)
+        st.markdown("No file found in the specified subfolder. {file_pathK}",unsafe_allow_html=True)
         exit()
 
 
