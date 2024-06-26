@@ -54,18 +54,18 @@ if is_clicked01:
     split_df.columns = ['id', 'city']
 
     # Store the two parts in individual parameters      
-    fstStation_no = split_df.iloc[0]['id']
-    fstStation_city = split_df.iloc[0]['city']
-    sndStation_no = split_df.iloc[1]['id']
-    sndStation_city = split_df.iloc[1]['city']
+    fstStation_no: str= split_df.iloc[0]['id']
+    fstStation_city: str = split_df.iloc[0]['city']
+    sndStation_no: str = split_df.iloc[1]['id']
+    sndStation_city: str = split_df.iloc[1]['city']
     
     # Creating the DataFrame wi
     # Define the URL of the zip file and the target directory
     zip_urlKaiserslautern = "ftp://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/recent/stundenwerte_RR_{}_akt.zip".format(fstStation_no)
     zip_urlNennig = "ftp://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/recent/stundenwerte_RR_{}_akt.zip".format(sndStation_no)
+    st.write("**FirstStation**:\r  - {}\r  - {}\r  - {}\r  - {}\r\r".format(fstStation_no,fstStation_city,zip_urlKaiserslautern,type(fstStation_no)),allow_unsafe_html=True)
+    st.write("**SecondStation**:\r  - {}\r  - {}\r  - {}\r  - {}".format(sndStation_no,sndStation_city,zip_urlNennig,type(fstStation_no)),allow_unsafe_html=True)
 
-    st.write("firstURL: {}".format(zip_urlKaiserslautern))
-    st.write("zip_urlNennig: {}".format(zip_urlKaiserslautern))
     myProgress = st.progress(0., text="Downloading zip archive data...")
 
     #st.markdown("Downloading zip file...",unsafe_allow_html=True)
@@ -78,11 +78,12 @@ if is_clicked01:
     responseN = urlopen(zip_urlNennig)
     zipfileN = ZipFile(BytesIO(responseN.read()))
     zipfileN.extractall(temp_dir)
+
     myProgress.progress(0.5, text="Download and extraction finished!")
     time.sleep(0.5)
     #st.markdown("download finished",unsafe_allow_html=True)    
     myProgress.progress(0.6, text="Loading data...")
-    time.sleep(1)
+    time.sleep(0.5)
     
     st.write("-----------------------------")
     # Find the csv file in the subfolder "ftpRainDataRecent"
@@ -93,7 +94,8 @@ if is_clicked01:
         #for dir in dirs: st.write(dir)
         #st.write("-----------------------------")
         for file in files:
-            if file.startswith("p"): st.write(file)
+            if file.startswith("produkt"): st.write(file)
+            
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
                 file_pathK = os.path.join(root, file)
                 st.write(fstStation_no)
@@ -105,16 +107,14 @@ if is_clicked01:
                 break
 
     st.write("-----------------------------")
-    st.markdown("fstStationNo: {}".format(fstStation_no))
-    st.markdown("sndStationNo: {}".format(sndStation_no))
 
     # Check if the file was found
     if file_pathK is None :
-        st.markdown("No file found in the specified subfolder: {}".format(file_pathK))
+        st.markdown("This file could not be found: {}".format(file_pathK))
         
 
     if file_pathN is None:
-        st.markdown("No file found in the specified subfolder: {}".format(file_pathN))
+        st.markdown("This file could not be found: {}".format(file_pathN))
         
 
 
