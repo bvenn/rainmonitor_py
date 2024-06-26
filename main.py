@@ -79,15 +79,15 @@ if is_clicked01:
     file_pathN = None
     for root, dirs, files in os.walk(temp_dir):
         for file in files:
-            if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__('02486'):
+            if file.startswith('produkt_rr_stunde') & file.endswith('.txt'):
                 file_pathK = os.path.join(root, file)
-            if file.startswith('produkt_rr_stunde') & file.endswith('.txt')& file.__contains__('03904'):
+            if file.startswith('produkt_rr_stunde') & file.endswith('.txt'):
                 file_pathN = os.path.join(root, file)
                 break
 
     # Check if the file was found
     if file_pathK is None or file_pathN is None:
-        st.markdown("No CSV file found in the specified subfolder.",unsafe_allow_html=True)
+        st.markdown("No file found in the specified subfolder." + file_pathK,unsafe_allow_html=True)
         exit()
 
 
@@ -247,7 +247,8 @@ if is_clicked01:
 
 # oder einfach vs code terminal und streamlit run main.py
 
-
+# dont forget to set:
+# Azure Ressource -> settings -> configuration -> general -> startup command: run.sh
 
 # DOCKERFILE
 # FROM python:3
