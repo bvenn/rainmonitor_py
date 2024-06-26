@@ -90,7 +90,7 @@ if is_clicked01:
     file_pathN = None
     for root, dirs, files in os.walk(temp_dir):
         #st.write("dirs -----------------------------")
-        for dir in dirs: st.write(dir)
+        #for dir in dirs: st.write(dir)
         st.write("-----------------------------")
         for file in files:
             if file.startswith("p"): st.write(file)
