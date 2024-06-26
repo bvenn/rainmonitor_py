@@ -91,7 +91,7 @@ if is_clicked01:
     for root, dirs, files in os.walk(temp_dir):
         #st.write("dirs -----------------------------")
         #for dir in dirs: st.write(dir)
-        st.write("-----------------------------")
+        #st.write("-----------------------------")
         for file in files:
             if file.startswith("p"): st.write(file)
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
