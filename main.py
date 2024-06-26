@@ -10,7 +10,13 @@ import plotly.graph_objs as plotly
 
 from datetime import datetime, timedelta
 
+# ------------ SETTINGS ------------
 temp_dir = os.environ.get('TEMP', '/tmp')
+page_title = "Rain Monitor"
+page_icon = "cloud_with_rain"
+# ----------------------------------
+
+
 
 # Read the file into a DataFrame
 stations_df = pd.read_csv('stations.csv',dtype={'stationID':str})
@@ -58,12 +64,16 @@ if is_clicked01:
     zip_urlKaiserslautern = "ftp://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/recent/stundenwerte_RR_{}_akt.zip".format(fstStation_no)
     zip_urlNennig = "ftp://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/recent/stundenwerte_RR_{}_akt.zip".format(sndStation_no)
 
+    st.write("firstURL: {}".format(zip_urlKaiserslautern))
+    st.write("zip_urlNennig: {}".format(zip_urlKaiserslautern))
     myProgress = st.progress(0., text="Downloading zip archive data...")
 
     #st.markdown("Downloading zip file...",unsafe_allow_html=True)
     response = urlopen(zip_urlKaiserslautern)
     zipfile = ZipFile(BytesIO(response.read()))
     zipfile.extractall(temp_dir)
+
+
 
     responseN = urlopen(zip_urlNennig)
     zipfileN = ZipFile(BytesIO(responseN.read()))
@@ -74,11 +84,16 @@ if is_clicked01:
     myProgress.progress(0.6, text="Loading data...")
     time.sleep(1)
     
+    st.write("-----------------------------")
     # Find the csv file in the subfolder "ftpRainDataRecent"
     file_pathK = None
     file_pathN = None
     for root, dirs, files in os.walk(temp_dir):
+        #st.write("dirs -----------------------------")
+        for dir in dirs: st.write(dir)
+        st.write("-----------------------------")
         for file in files:
+            if file.startswith("p"): st.write(file)
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
                 file_pathK = os.path.join(root, file)
                 st.write(fstStation_no)
@@ -89,6 +104,7 @@ if is_clicked01:
                 st.write(file_pathN)
                 break
 
+    st.write("-----------------------------")
     st.markdown("fstStationNo: {}".format(fstStation_no))
     st.markdown("sndStationNo: {}".format(sndStation_no))
 
