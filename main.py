@@ -3,11 +3,11 @@ import pandas as pd
 from urllib.request import urlopen
 from zipfile import ZipFile
 from io import BytesIO
+from io import StringIO
 import streamlit as st
 import plotly.express as px
 import time
 import plotly.graph_objs as plotly
-
 from datetime import datetime, timedelta
 
 # ------------ SETTINGS ------------
@@ -76,59 +76,98 @@ if is_clicked01:
     st.write("**SecondStation**:\r  - {}\r  - {}\r  - {}\r  - {}".format(sndStation_no,sndStation_city,zip_urlNennig,type(fstStation_no)),unsafe_allow_html=True)
     
     myProgress = st.progress(0., text="Downloading zip archive data...")
-
-    #st.markdown("Downloading zip file...",unsafe_allow_html=True)
-    response = urlopen(zip_urlKaiserslautern)
-    zipfile = ZipFile(BytesIO(response.read()))
-    zipfile.extractall(temp_dir)
-
-
-
-    responseN = urlopen(zip_urlNennig)
-    zipfileN = ZipFile(BytesIO(responseN.read()))
-    zipfileN.extractall(temp_dir)
-
-    myProgress.progress(0.5, text="Download and extraction finished!")
-    time.sleep(0.5)
-    #st.markdown("download finished",unsafe_allow_html=True)    
-    myProgress.progress(0.6, text="Loading data...")
-    time.sleep(0.5)
-    
-    st.write("-----------------------------")
-    # Find the csv file in the subfolder "ftpRainDataRecent"
-    file_pathK = None
-    file_pathN = None
-    for root, dirs, files in os.walk(temp_dir):
-        #st.write("dirs -----------------------------")
-        #for dir in dirs: st.write(dir)
-        #st.write("-----------------------------")
-        for file in files:
-            if file.startswith("produkt"): st.write(file)
-            
-            if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
-                file_pathK = os.path.join(root, file)
-                st.write(file_pathK)
-            if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(sndStation_no):
-                file_pathN = os.path.join(root, file)
-                st.write(file_pathN)
-                break
-
-    st.write("-----------------------------")
-
-    # Check if the file was found
-    if file_pathK is None :
-        st.markdown("The fst file could not be found: {}".format(file_pathK))
         
 
-    if file_pathN is None:
-        st.markdown("The snd file could not be found: {}".format(file_pathN))
-        
+    # Open the zip file from the URL
+    with urlopen(zip_urlKaiserslautern) as response:
+        with ZipFile(BytesIO(response.read())) as zip_file:
+            # Find the file that starts with 'produkt'
+            matching_files = [file for file in zip_file.namelist() if file.startswith('produkt')]
+
+            # Extract the matching file
+            if matching_files:
+                matching_file_content = zip_file.read(matching_files[0])
+                (matching_file_content.decode('utf-8'))
+            else:
+                print("No file found that starts with 'produkt'")
+
+    # Open the zip file from the URL
+    responseF = urlopen(zip_urlKaiserslautern)
+    zip_fileF = ZipFile(BytesIO(responseF.read())) 
+    # Find the file that starts with 'produkt'
+    matching_filesF = [file for file in zip_fileF.namelist() if file.startswith('produkt')]
+    # Extract the matching file
+    matching_file_contentF = zip_fileF.read(matching_filesF[0])
+    fstStation = (matching_file_contentF.decode('utf-8'))
+
+    # Open the zip file from the URL
+    responseS = urlopen(zip_urlNennig)
+    zip_fileS = ZipFile(BytesIO(responseS.read())) 
+    # Find the file that starts with 'produkt'
+    matching_filesS = [file for file in zip_fileS.namelist() if file.startswith('produkt')]
+    # Extract the matching file
+    matching_file_contentS = zip_fileS.read(matching_filesS[0])
+    sndStation = (matching_file_contentS.decode('utf-8'))
+
+    dfK = pd.read_csv(StringIO(fstStation), sep=';', skipinitialspace=True, encoding='latin1')
+    dfN = pd.read_csv(StringIO(sndStation), sep=';', skipinitialspace=True, encoding='latin1')
 
 
-    # Load the semicolon-separated file
-    #st.markdown("Loading data...",unsafe_allow_html=True) # end=""
-    dfK = pd.read_csv(file_pathK, sep=';', encoding='latin1')
-    dfN = pd.read_csv(file_pathN, sep=';', encoding='latin1')
+
+
+
+    ##st.markdown("Downloading zip file...",unsafe_allow_html=True)
+    #response = urlopen(zip_urlKaiserslautern)
+    #zipfile = ZipFile(BytesIO(response.read()))
+    #zipfile.extractall(temp_dir)
+#
+#
+#
+    #responseN = urlopen(zip_urlNennig)
+    #zipfileN = ZipFile(BytesIO(responseN.read()))
+    #zipfileN.extractall(temp_dir)
+#
+    #myProgress.progress(0.5, text="Download and extraction finished!")
+    #time.sleep(0.5)
+    ##st.markdown("download finished",unsafe_allow_html=True)    
+    #myProgress.progress(0.6, text="Loading data...")
+    #time.sleep(0.5)
+    #
+    #st.write("-----------------------------")
+    ## Find the csv file in the subfolder "ftpRainDataRecent"
+    #file_pathK = None
+    #file_pathN = None
+    #for root, dirs, files in os.walk(temp_dir):
+    #    #st.write("dirs -----------------------------")
+    #    #for dir in dirs: st.write(dir)
+    #    #st.write("-----------------------------")
+    #    for file in files:
+    #        if file.startswith("produkt"): st.write(file)
+    #        
+    #        if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
+    #            file_pathK = os.path.join(root, file)
+    #            st.write(file_pathK)
+    #        if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(sndStation_no):
+    #            file_pathN = os.path.join(root, file)
+    #            st.write(file_pathN)
+    #            break
+#
+    #st.write("-----------------------------")
+#
+    ## Check if the file was found
+    #if file_pathK is None :
+    #    st.markdown("The fst file could not be found: {}".format(file_pathK))
+    #    
+#
+    #if file_pathN is None:
+    #    st.markdown("The snd file could not be found: {}".format(file_pathN))
+    #    
+#
+#
+    ## Load the semicolon-separated file
+    ##st.markdown("Loading data...",unsafe_allow_html=True) # end=""
+    ##dfK = pd.read_csv(file_pathK, sep=';', encoding='latin1')
+    ##dfN = pd.read_csv(file_pathN, sep=';', encoding='latin1')
     
 
     myProgress.progress(1.0, text="Data loaded!")
@@ -144,13 +183,13 @@ if is_clicked01:
 
     filtered_dfK = dfK[dfK['MESS_DATUM'] >= two_months_ago]
     filtered_dfN = dfN[dfN['MESS_DATUM'] >= two_months_ago]
-    filtered_dfK = filtered_dfK[filtered_dfK['  R1'] >= 0]
-    filtered_dfN = filtered_dfN[filtered_dfN['  R1'] >= 0]
+    filtered_dfK = filtered_dfK[filtered_dfK['R1'] >= 0]
+    filtered_dfN = filtered_dfN[filtered_dfN['R1'] >= 0]
 
 
     # Plot the data
-    figK = px.histogram(filtered_dfK, x='MESS_DATUM', y='  R1', title='R1 vs Time', nbins=int(len(filtered_dfK)))
-    figN = px.histogram(filtered_dfN, x='MESS_DATUM', y='  R1', title='R1 vs Time', nbins=int(len(filtered_dfN)))
+    figK = px.histogram(filtered_dfK, x='MESS_DATUM', y='R1', title='R1 vs Time', nbins=int(len(filtered_dfK)))
+    figN = px.histogram(filtered_dfN, x='MESS_DATUM', y='R1', title='R1 vs Time', nbins=int(len(filtered_dfN)))
     
     figK.update_layout(title=fstStation_city)
     figN.update_layout(title=sndStation_city)
@@ -194,8 +233,8 @@ if is_clicked01:
         zeroline=True
     )
     
-    myfigK = px.histogram(filtered_dfK, x='MESS_DATUM', y='  R1',  nbins=int(len(filtered_dfK)),color_discrete_sequence=['#1f77b4'], opacity=0.5)
-    myfigN = px.histogram(filtered_dfN, x='MESS_DATUM', y='  R1',  nbins=int(len(filtered_dfN)),color_discrete_sequence=['#ff7f0e'], opacity=0.5)
+    myfigK = px.histogram(filtered_dfK, x='MESS_DATUM', y='R1',  nbins=int(len(filtered_dfK)),color_discrete_sequence=['#1f77b4'], opacity=0.5)
+    myfigN = px.histogram(filtered_dfN, x='MESS_DATUM', y='R1',  nbins=int(len(filtered_dfN)),color_discrete_sequence=['#ff7f0e'], opacity=0.5)
 
     layoutC = plotly.Layout(
         title='Regenmengen der letzten 14 Tage in {} und {}'.format(fstStation_city, sndStation_city),
@@ -233,8 +272,8 @@ if is_clicked01:
 
     st.markdown("<i>Abbildung 1: Regenmengen sind angegeben als L / qm innerhalb einer Stunde</i>",unsafe_allow_html=True)
 
-    tmpK = filtered_dfK[['MESS_DATUM','  R1']].rename(columns={'  R1': fstStation_city})
-    tmpN = filtered_dfN[['MESS_DATUM','  R1']].rename(columns={'  R1': sndStation_city})
+    tmpK = filtered_dfK[['MESS_DATUM','R1']].rename(columns={'R1': fstStation_city})
+    tmpN = filtered_dfN[['MESS_DATUM','R1']].rename(columns={'R1': sndStation_city})
 
     daily_sumK = tmpK.groupby(tmpK['MESS_DATUM'].dt.date)[fstStation_city].sum()
     daily_sumN = tmpN.groupby(tmpN['MESS_DATUM'].dt.date)[sndStation_city].sum()
