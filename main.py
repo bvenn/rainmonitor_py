@@ -89,10 +89,17 @@ if is_clicked01:
                 st.write(file_pathN)
                 break
 
+    st.markdown("fstStationNo: {}".format(fstStation_no))
+    st.markdown("sndStationNo: {}".format(sndStation_no))
+
     # Check if the file was found
-    if file_pathK is None or file_pathN is None:
-        st.markdown("No file found in the specified subfolder. {file_pathK}",unsafe_allow_html=True)
-        exit()
+    if file_pathK is None :
+        st.markdown("No file found in the specified subfolder: {}".format(file_pathK))
+        
+
+    if file_pathN is None:
+        st.markdown("No file found in the specified subfolder: {}".format(file_pathN))
+        
 
 
     # Load the semicolon-separated file
