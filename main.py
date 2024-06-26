@@ -16,6 +16,15 @@ page_title = "Rain Monitor"
 page_icon = "cloud_with_rain"
 # ----------------------------------
 
+# hide streamlit style
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
 # Read the file into a DataFrame
@@ -98,11 +107,9 @@ if is_clicked01:
             
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(fstStation_no):
                 file_pathK = os.path.join(root, file)
-                st.write(fstStation_no)
                 st.write(file_pathK)
             if file.startswith('produkt_rr_stunde') & file.endswith('.txt') & file.__contains__(sndStation_no):
                 file_pathN = os.path.join(root, file)
-                st.write(sndStation_no)
                 st.write(file_pathN)
                 break
 
@@ -110,11 +117,11 @@ if is_clicked01:
 
     # Check if the file was found
     if file_pathK is None :
-        st.markdown("This file could not be found: {}".format(file_pathK))
+        st.markdown("The fst file could not be found: {}".format(file_pathK))
         
 
     if file_pathN is None:
-        st.markdown("This file could not be found: {}".format(file_pathN))
+        st.markdown("The snd file could not be found: {}".format(file_pathN))
         
 
 
