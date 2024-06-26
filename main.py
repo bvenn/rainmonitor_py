@@ -72,8 +72,10 @@ if is_clicked01:
     # Define the URL of the zip file and the target directory
     zip_urlKaiserslautern = "ftp://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/recent/stundenwerte_RR_{}_akt.zip".format(fstStation_no)
     zip_urlNennig = "ftp://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/recent/stundenwerte_RR_{}_akt.zip".format(sndStation_no)
-    st.write("**FirstStation**:\r  - {}\r  - {}\r  - {}\r  - {}\r\r".format(fstStation_no,fstStation_city,zip_urlKaiserslautern,type(fstStation_no)),unsafe_allow_html=True)
-    st.write("**SecondStation**:\r  - {}\r  - {}\r  - {}\r  - {}".format(sndStation_no,sndStation_city,zip_urlNennig,type(fstStation_no)),unsafe_allow_html=True)
+    #
+    # st.write("**FirstStation**:\r  - {}\r  - {}\r  - {}\r  - {}\r\r".format(fstStation_no,fstStation_city,zip_urlKaiserslautern,type(fstStation_no)),unsafe_allow_html=True)
+    #
+    # st.write("**SecondStation**:\r  - {}\r  - {}\r  - {}\r  - {}".format(sndStation_no,sndStation_city,zip_urlNennig,type(fstStation_no)),unsafe_allow_html=True)
     
     myProgress = st.progress(0., text="Downloading zip archive data...")
         
